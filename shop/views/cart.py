@@ -44,7 +44,7 @@ class CartItemDetail(ShopView):
 
         http://example.com/shop/cart/item/12345
         """
-        cart_object = get_or_create_cart(self.request)
+        self.cart_object = get_or_create_cart(self.request)
         item_id = self.kwargs.get('id')
         # NOTE: it seems logic to be in POST but as tests client shows
         # with PUT request, data is in GET variable
@@ -54,7 +54,7 @@ class CartItemDetail(ShopView):
             quantity = int(self.request.POST['item_quantity'])
         except (KeyError, ValueError):
             return HttpResponseBadRequest("The quantity has to be a number")
-        cart_object.update_quantity(item_id, quantity)
+        self.cart_object.update_quantity(item_id, quantity)
         return self.put_success()
 
     def delete(self, request, *args, **kwargs):
@@ -64,10 +64,10 @@ class CartItemDetail(ShopView):
 
         http://example.com/shop/cart/item/12345
         """
-        cart_object = get_or_create_cart(self.request)
+        self.cart_object = get_or_create_cart(self.request)
         item_id = self.kwargs.get('id')
         try:
-            cart_object.delete_item(item_id)
+            self.cart_object.delete_item(item_id)
             return self.delete_success()
         except ObjectDoesNotExist:
             raise Http404
